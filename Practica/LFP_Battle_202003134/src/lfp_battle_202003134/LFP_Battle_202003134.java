@@ -1,4 +1,5 @@
 package lfp_battle_202003134;
+import java.awt.Desktop;
 import java.util.*;
 import java.io.*;
 /**
@@ -41,10 +42,10 @@ public class LFP_Battle_202003134 {
                     
                     break;
                 case 3:
-                    
+                    reportedeataque(jugadores);
                     break;
                 case 4:
-
+                    reportededefensa(jugadores);
                     break;
                 case 5:
                     System.out.println("");
@@ -97,13 +98,17 @@ public class LFP_Battle_202003134 {
                 }
                 jugadores.remove(0);
                 if (jugadores.size()%2==0) {
+                    System.out.println("");
                     System.out.println("-----------------------");
                     System.out.println("Archivo Par Cargado");
                     System.out.println("-----------------------");
+                    System.out.println("");
                 }else{
+                    System.out.println("");
                     System.out.println("-----------------------");
                     System.out.println("Archivo Impar Cargado");
                     System.out.println("-----------------------");
+                    System.out.println("");
                 }
 
             } catch (FileNotFoundException e) {
@@ -127,6 +132,7 @@ public class LFP_Battle_202003134 {
     }
     
     public static void batalla(){
+        reportedeataqueydefensa(jugadores);
         do {
             System.out.println("");
             System.out.println("====================   NUEVA   RONDA   =====================");
@@ -207,8 +213,169 @@ public class LFP_Battle_202003134 {
             
         } while (jugadores.size()>1);
         System.out.println("");
-        System.out.println("**__**__EL GANADOR ES "+jugadores.get(0).get(1)+"__**__**");
+        System.out.println("**__**__EL CAMPEÓN DEL TORNEO ES "+jugadores.get(0).get(1)+"__**__**");
         System.out.println("");
         jugadores.remove(0);
+    }
+    
+    public static void reportedeataque(ArrayList<ArrayList<Object>> jugadores) {
+        if (jugadores.isEmpty()) {
+            System.out.println("");
+            System.out.println("-_-_-_-_-_-_-_-_-_-_-_-_-");
+            System.out.println("Ningún archivo cargado");
+            System.out.println("-_-_-_-_-_-_-_-_-_-_-_-_-");
+            System.out.println("");
+            return;
+        }
+        
+        List<ArrayList<Object>> mejorataque = new ArrayList<>(jugadores);
+        mejorataque.sort((a, b) -> Integer.compare((int) b.get(3), (int) a.get(3)));
+        mejorataque = mejorataque.subList(0, Math.min(5, mejorataque.size()));
+        
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>Ranking de Personajes</title>");
+        html.append("<style>");
+        html.append("body { font-family: Arial, sans-serif; text-align: center; }");
+        html.append("table { margin: 20px auto; border-collapse: collapse; width: 50%; }");
+        html.append("th, td { border: 1px solid black; padding: 10px; }");
+        html.append("th { background-color: #E65545; color: white; }");
+        html.append("</style>");
+        html.append("</head><body>");
+        html.append("<h1>Ranking de Personajes</h1>");
+        //----------------------------------------------------------------------------------
+        html.append("<h2>Top 5 - Mayor Ataque</h2><table>");
+        html.append("<tr><th>Posición</th><th>Nombre</th><th>Ataque</th></tr>");
+        for (int i = 0; i < mejorataque.size(); i++) {
+            html.append("<tr><td>").append(i + 1).append("</td><td>")
+                .append(mejorataque.get(i).get(1)).append("</td><td>")
+                .append(mejorataque.get(i).get(3)).append("</td></tr>");
+        }
+        html.append("</table>");
+        //----------------------------------------------------------------------------------
+        html.append("</body></html>");
+        
+        try {
+            File archivo = new File("reporte_ataque.html");
+            FileWriter escritor = new FileWriter(archivo);
+            escritor.write(html.toString());
+            escritor.close();
+            Desktop.getDesktop().browse(archivo.toURI());
+            System.out.println("Reporte de ataque generado exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+
+    public static void reportededefensa(ArrayList<ArrayList<Object>> jugadores) {
+        if (jugadores.isEmpty()) {
+            System.out.println("");
+            System.out.println("-_-_-_-_-_-_-_-_-_-_-_-_-");
+            System.out.println("Ningún archivo cargado");
+            System.out.println("-_-_-_-_-_-_-_-_-_-_-_-_-");
+            System.out.println("");
+            return;
+        }
+        
+        List<ArrayList<Object>> mejordefensa = new ArrayList<>(jugadores);
+        mejordefensa.sort((a, b) -> Integer.compare((int) b.get(4), (int) a.get(4)));
+        mejordefensa = mejordefensa.subList(0, Math.min(5, mejordefensa.size()));
+        
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>Ranking de Personajes</title>");
+        html.append("<style>");
+        html.append("body { font-family: Arial, sans-serif; text-align: center; }");
+        html.append("table { margin: 20px auto; border-collapse: collapse; width: 50%; }");
+        html.append("th, td { border: 1px solid black; padding: 10px; }");
+        html.append("th { background-color: #332DE0; color: white; }");
+        html.append("</style>");
+        html.append("</head><body>");
+        html.append("<h1>Ranking de Personajes</h1>");
+        //----------------------------------------------------------------------------------
+        html.append("<h2>Top 5 - Mayor Defensa</h2><table>");
+        html.append("<tr><th>Posición</th><th>Nombre</th><th>Defensa</th></tr>");
+        for (int i = 0; i < mejordefensa.size(); i++) {
+            html.append("<tr><td>").append(i + 1).append("</td><td>")
+                .append(mejordefensa.get(i).get(1)).append("</td><td>")
+                .append(mejordefensa.get(i).get(4)).append("</td></tr>");
+        }
+        html.append("</table>");
+        //----------------------------------------------------------------------------------
+        html.append("</body></html>");
+        
+        try {
+            File archivo = new File("reporte_defensa.html");
+            FileWriter escritor = new FileWriter(archivo);
+            escritor.write(html.toString());
+            escritor.close();
+            Desktop.getDesktop().browse(archivo.toURI());
+            System.out.println("Reporte de defensa generado exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al generar el reporte: " + e.getMessage());
+        }
+    }
+    
+    public static void reportedeataqueydefensa(ArrayList<ArrayList<Object>> jugadores) {
+        if (jugadores.isEmpty()) {
+            System.out.println("");
+            System.out.println("-_-_-_-_-_-_-_-_-_-_-_-_-");
+            System.out.println("Ningún archivo cargado");
+            System.out.println("-_-_-_-_-_-_-_-_-_-_-_-_-");
+            System.out.println("");
+            return;
+        }
+
+        List<ArrayList<Object>> mejorataque = new ArrayList<>(jugadores);
+        List<ArrayList<Object>> mejordefensa = new ArrayList<>(jugadores);
+        
+        mejorataque.sort((a, b) -> Integer.compare((int) b.get(3), (int) a.get(3)));
+        mejordefensa.sort((a, b) -> Integer.compare((int) b.get(4), (int) a.get(4)));
+        mejorataque = mejorataque.subList(0, Math.min(5, mejorataque.size()));
+        mejordefensa = mejordefensa.subList(0, Math.min(5, mejordefensa.size()));
+        
+        StringBuilder html = new StringBuilder();
+        html.append("<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><title>Ranking de Personajes</title>");
+        html.append("<style>");
+        html.append("body { font-family: Arial, sans-serif; text-align: center; }");
+        html.append("table { margin: 20px auto; border-collapse: collapse; width: 50%; }");
+        html.append("th, td { border: 1px solid black; padding: 10px; }");
+        html.append(".ataque th { background-color: #E65545; color: white; }");
+        html.append(".defensa th { background-color: #332DE0; color: white; }");
+        html.append("</style>");
+        html.append("</head><body>");
+        html.append("<h1>Ranking de Personajes</h1>");
+        //----------------------------------------------------------------------------------
+        html.append("<h2>Top 5 - Mayor Ataque</h2><table class='ataque'>");
+        html.append("<tr><th>Posición</th><th>Nombre</th><th>Ataque</th></tr>");
+        
+        for (int i = 0; i < mejorataque.size(); i++) {
+            html.append("<tr><td>").append(i + 1).append("</td><td>")
+                .append(mejorataque.get(i).get(1)).append("</td><td>")
+                .append(mejorataque.get(i).get(3)).append("</td></tr>");
+        }
+        html.append("</table>");
+        //----------------------------------------------------------------------------------
+        html.append("<h2>Top 5 - Mayor Defensa</h2><table class='defensa'>");
+        html.append("<tr><th>Posición</th><th>Nombre</th><th>Defensa</th></tr>");
+        
+        for (int i = 0; i < mejordefensa.size(); i++) {
+            html.append("<tr><td>").append(i + 1).append("</td><td>")
+                .append(mejordefensa.get(i).get(1)).append("</td><td>")
+                .append(mejordefensa.get(i).get(4)).append("</td></tr>");
+        }
+        
+        html.append("</table>");
+        //----------------------------------------------------------------------------------
+        html.append("</body></html>");
+        
+        try {
+            File archivo = new File("reporte_ataque_y_defensa.html");
+            FileWriter escritor = new FileWriter(archivo);
+            escritor.write(html.toString());
+            escritor.close();
+            Desktop.getDesktop().browse(archivo.toURI());
+            System.out.println("Reporte generado exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al generar el reporte: " + e.getMessage());
+        }
     }
 }
